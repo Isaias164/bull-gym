@@ -1,0 +1,7 @@
+django
+djangorestframework
+markdown
+django-filter
+djangorestframework-simplejwt
+pymysql
+python-dotenv
