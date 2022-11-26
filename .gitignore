@@ -1,0 +1,5 @@
+.env
+.log
+.sqlite3
+**/makemigrations
+**/__pycache__
