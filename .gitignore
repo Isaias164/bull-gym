@@ -1,5 +1,5 @@
 .env
 .log
 .sqlite3
-**/makemigrations
+**/migrations
 **/__pycache__
