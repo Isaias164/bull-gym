@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView
@@ -9,128 +10,24 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from api.serializers import LoginSerializer, CreateUserSerializers
 
-
 class LoginViews(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         data = LoginSerializer(data=request.data, context={"request": request})
-        if not data.is_valid():
-            return Response({"error": True, "message": "Ocurrio un error"})
-        _auth = data.verify_login(data.validated_data)
-        return Response(_auth)
+        if data.is_valid(raise_exception=True):
+            _auth = data.verify_login(data.validated_data)
+            return Response(_auth)
 
 
-class CreateUserViews(CreateAPIView):
-    serializer_class = CreateUserSerializers
+class CreateUserViews(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        data = CreateUserSerializers(data=request.data,context={"request": request})
+        if data.is_valid(raise_exception=True):
+            t = data.create(data.validated_data)
+            return Response(t)
+        
 
-
-# class UserViews(ViewSet):
-#     permission_classes = [AllowAny]
-
-#     @action(detail=True, methods=["post"])
-#     def login_user(self, request):
-#         from django.contrib.auth import authenticate, login
-
-#         datos = LoginSerializers(data=request.data)
-#         if not datos.is_valid():
-#             return Response(
-#                 {"login": False, "messaje": datos.errors},
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-#         # Verifico si el usuario esta en la base de datos
-#         usuario = authenticate(
-#             username=datos.validated_data["username"],
-#             password=datos.validated_data["password"],
-#         )
-#         # si las credenciales son correctas y/o el usuario existe en la bd
-#         if usuario is not None:
-#             # asocio el usuario con la session
-#             login(request, usuario)
-#             # llamo al endpoint que me va a generar el token bearer para acceder a las demás clases más adelante
-#             # La vista que me genera el token va a retornar al cliente el token/refreshtoken
-#             return HttpResponseRedirect(
-#                 "/api/token/",
-#                 content=datos.validated_data,
-#                 content_type="application/json",
-#                 status=status.HTTP_308_PERMANENT_REDIRECT,
-#             )
-#         else:
-#             return Response(
-#                 {
-#                     "login": False,
-#                     "mensaje": "Posibles causas del fallo:\n1- El usuario y/o la contraseña no coincide\n2-Su usuario ha sido desactivado por el administrador. Contacte con el administrador",
-#                 },
-#                 status=status.HTTP_202_ACCEPTED,
-#             )
-
-#     def create(self, request):
-
-#         try:
-#             datos = CreateUserSerializers(data=request.data)
-#             if not datos.is_valid():
-#                 return Response(
-#                     {"create_user": False, "error": datos.errors},
-#                     status=status.HTTP_400_BAD_REQUEST,
-#                 )
-#             name = datos.validated_data["first_name"]
-#             last_name = datos.validated_data["last_name"]
-#             correo = datos.validated_data["email"]
-#             pwd = datos.validated_data["password"]
-#             username = datos.validated_data["username"]
-#             existe_usuario = Instalaciones.insertar(
-#                 self, "SELECT EXISTE_USUARIO(%s)", (username,)
-#             )
-#             existe_correo = Instalaciones.insertar(
-#                 self, "SELECT EXISTE_CORREO(%s)", (correo,)
-#             )
-#             if not existe_correo[0]:
-#                 if not existe_usuario[0]:
-#                     userAuth = User.objects.create_user(
-#                         username,
-#                         correo,
-#                         pwd,
-#                         first_name=name,
-#                         last_name=last_name,
-#                     )
-#                     # creo la sessión y guardo el nombre de usuario y nombre
-#                     request.session["usuario"] = (
-#                         username,
-#                         name,
-#                     )
-#                     # unimos la session con el usuario
-#                     login(request, userAuth)
-#                     # obtenemos su token
-#                     datos.validated_data.pop("first_name")
-#                     datos.validated_data.pop("last_name")
-#                     datos.validated_data.pop("email")
-#                     return HttpResponseRedirect(
-#                         "/api/token/",
-#                         content=datos.validated_data,
-#                         content_type="application/json",
-#                         status=status.HTTP_308_PERMANENT_REDIRECT,
-#                     )
-
-#                 else:
-#                     return Response(
-#                         {
-#                             "usuario": f"El usuario {username} ya existe en la base de datos. Elija otro usuario",
-#                         },
-#                         status=status.HTTP_208_ALREADY_REPORTED,
-#                         content_type="application/json",
-#                     )
-#             else:
-#                 return Response(
-#                     {
-#                         "correo": f"El correo {correo} ya existe en la base de datos. Elija otro correo",
-#                     },
-#                     status=status.HTTP_208_ALREADY_REPORTED,
-#                     content_type="application/json",
-#                 )
-#         except Exception as objExceptions:
-#             return Response(
-#                 {"error: ": str(objExceptions)},
-#                 content_type="application/json",
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
 
 
 # class LogingViews(ViewSet):
