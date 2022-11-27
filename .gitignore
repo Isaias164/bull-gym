@@ -3,3 +3,6 @@
 **/.sqlite3
 **/migrations
 **/__pycache__
+**/Scripts
+**/Lib
+pyvenv.cfg
