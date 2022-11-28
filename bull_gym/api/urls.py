@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginViews, CreateUserViews
+from .views import LoginViews, CreateUserViews,BookingsListViews,BookingsPiletaViews
 
 urlpatterns = [
     path(
@@ -7,6 +7,8 @@ urlpatterns = [
         LoginViews.as_view(),
     ),
     path("create-user/", CreateUserViews.as_view()),
+    path("see-bookings/",BookingsListViews.as_view()),
+    path("add-bookings/pileta/",BookingsPiletaViews.as_view())
 ]
 
 

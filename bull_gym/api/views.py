@@ -4,11 +4,13 @@ from django.contrib.auth import login, logout
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView,ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from api.serializers import LoginSerializer, CreateUserSerializers
+from api.serializers import LoginSerializer, CreateUserSerializers, BookingsSerializers,AddBookingsSerializers
+from api.models import Reserbas
+from api.permissions import *
 
 class LoginViews(APIView):
     permission_classes = [AllowAny]
@@ -27,7 +29,41 @@ class CreateUserViews(APIView):
             t = data.create(data.validated_data)
             return Response(t)
         
+class BookingsListViews(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = BookingsSerializers
+    
+    def get_queryset(self):
+        return Reserbas.objects.filter(user=self.request.user)
+        
+# Pileta        
+class BookingsPiletaViews(CreateAPIView):
+    permission_classes = [IsAuthenticated,PermissionsSink]
+    queryset = Reserbas.objects.none()
+    serializer_class = AddBookingsSerializers
+    
+    def get_context_data(self, **kwargs):
+        context["request"] = self.request 
+        return context
+    
+    
+# Paddle
+class BookingsPaddleViews(CreateAPIView):
+    permission_classes = [IsAuthenticated,PermissionsPaddle]
+    serializer_class = AddBookingsSerializers
+    queryset = Reserbas.objects.all()
 
+# Gym
+class BookingsGymViews(CreateAPIView):
+    permission_classes = [IsAuthenticated,PermissionsGym]
+    serializer_class = AddBookingsSerializers
+    queryset = Reserbas.objects.all()
+
+# Fútbol
+class BookingsFutbolViews(CreateAPIView):
+    permission_classes = [IsAuthenticated,PermissionsFutbol]
+    serializer_class = AddBookingsSerializers
+    queryset = Reserbas.objects.all()
 
 
 # class LogingViews(ViewSet):

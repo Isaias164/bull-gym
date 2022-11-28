@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from api.constants import TypePayments
+from api.constants import TypePayments,Sports
 
 
 class Users(AbstractUser):
@@ -17,9 +17,11 @@ class Users(AbstractUser):
 
 
 class Instalaciones(models.Model):
-    precio = models.IntegerField()
-    cantidadUsuarios = models.IntegerField(blank=True, null=True)
-
+    price = models.IntegerField(default=0)
+    maximum_capacity = models.IntegerField(blank=True, null=True)
+    limit_users = models.IntegerField(default=0)
+    has_capacity = models.BooleanField(default=True)
+    name = models.CharField(max_length=15,null=True)
     class Meta:
         abstract = True
 
@@ -29,41 +31,49 @@ class Gym(Instalaciones):
         db_table = "gym"
 
 
-class Pileta(Instalaciones):
+class Sink(Instalaciones):
     def __str__(self) -> str:
         return "Pileta " + str(self.id)
 
     class Meta:
-        db_table = "pileta"
+        db_table = "sink"
 
 
-class CanchasFutbol(Instalaciones):
+class Futbol(Instalaciones):
     def __str__(self) -> str:
         return "Cancha de fútbol " + str(self.id)
 
     class Meta:
-        db_table = "canchasfutbol"
+        db_table = "futbol"
 
 
-class CanchasPaddle(Instalaciones):
+class Paddle(Instalaciones):
     def __str__(self) -> str:
         return "Cancha de paddle " + str(self.id)
 
     class Meta:
-        db_table = "canchaspaddle"
-
-
+        db_table = "paddle"
+        
+        
 class Reserbas(models.Model):
-    time = models.IntegerField()
-    date = models.DateField()
+    time = models.IntegerField(null=True)
+    date = models.DateField(auto_now_add=True)
     sport = models.CharField(max_length=15)
-    count = models.IntegerField()
+    # count = models.IntegerField(null=True)
     paid_payment = models.CharField(
         max_length=12, default=TypePayments.OWES, choices=TypePayments.choices
     )
-    total_to_pay = models.IntegerField()
+    total_to_pay = models.IntegerField(null=True,default=0)
+    user = models.ForeignKey(
+        Users,
+        db_column="user",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_constraint="reserbas_user",
+    )
     futbol = models.ForeignKey(
-        CanchasFutbol,
+        Futbol,
         db_column="futbol",
         on_delete=models.SET_NULL,
         null=True,
@@ -71,7 +81,7 @@ class Reserbas(models.Model):
         db_constraint="reserba_futbol",
     )
     paddle = models.ForeignKey(
-        CanchasPaddle,
+        Paddle,
         db_column="paddle",
         on_delete=models.SET_NULL,
         null=True,
@@ -87,7 +97,7 @@ class Reserbas(models.Model):
         db_constraint="reserba_gym",
     )
     pileta = models.ForeignKey(
-        Pileta,
+        Sink,
         db_column="pileta",
         on_delete=models.SET_NULL,
         null=True,

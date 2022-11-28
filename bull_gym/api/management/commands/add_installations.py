@@ -1,25 +1,25 @@
 from django.core.management.base import BaseCommand
-from api.models import Gym,Pileta,CanchasFutbol,CanchasPaddle
+from api.models import Gym,Sink,Futbol,Paddle
 from colorama import init,Fore,Back
 
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
         init()
-        gym = Gym.objects.create(precio=700,cantidadUsuarios=15)
+        gym = Gym.objects.create(price=700,maximum_capacity=15,name="gym_1")
         print(Back.BLACK + Fore.GREEN+"Se agrego la instalación Gym")
-        pileta = Pileta.objects.create(precio=1200,cantidadUsuarios=20)
+        pileta = Sink.objects.create(price=1200,maximum_capacity=20,name="sink_1")
         print(Back.BLACK + Fore.GREEN+"Se agrego la instalación Pileta1")
-        pileta2 = Pileta.objects.create(precio=1200,cantidadUsuarios=20)
+        pileta2 = Sink.objects.create(price=1200,maximum_capacity=20,name="sink_2")
         print(Back.BLACK + Fore.GREEN+"Se agrego la instalación  Pileta2")
-        paddle1 = CanchasPaddle.objects.create(precio=500,cantidadUsuarios=2)
+        paddle1 = Paddle.objects.create(price=500,maximum_capacity=2,name="cancha_1")
         print(Back.BLACK + Fore.GREEN+"Se agrego la instalación Paddle1")
-        paddle2 = CanchasPaddle.objects.create(precio=500,cantidadUsuarios=2)
+        paddle2 = Paddle.objects.create(price=500,maximum_capacity=2,name="cancha_2")
         print(Back.BLACK + Fore.GREEN+"Se agrego la instalación Paddle2")
-        futbol1 = CanchasFutbol.objects.create(precio=1000,cantidadUsuarios=10)
+        futbol1 = Futbol.objects.create(price=1000,maximum_capacity=10,name="cancha_1")
         print(Back.BLACK + Fore.GREEN+"Se agrego la instalación Fútbol1")
-        futbol2 = CanchasFutbol.objects.create(precio=1000,cantidadUsuarios=10)
+        futbol2 = Futbol.objects.create(price=1000,maximum_capacity=10,name="cancha_2")
         print(Back.BLACK + Fore.GREEN+"Se agrego la instalación Fútbol1")
-        futbol3 = CanchasFutbol.objects.create(precio=1000,cantidadUsuarios=10)
+        futbol3 = Futbol.objects.create(price=1000,maximum_capacity=10,name="cancha_3")
         print(Back.BLACK + Fore.GREEN+"Se agrego la instalación Fútbol1")
         
