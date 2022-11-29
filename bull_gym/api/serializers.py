@@ -5,9 +5,8 @@ from api.models import Users
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth import get_user_model
 from api.models import Reserbas,Gym,Sink,Paddle,Futbol
-from api.constants import Sports
 from datetime import date
-
+from django.db.models import Q
 user = get_user_model()
 
 class LoginSerializer(serializers.Serializer):
@@ -64,37 +63,41 @@ class AddBookingsSerializers(serializers.Serializer):
     def create(self, validated_data):
         #today = date.today()
         today = validated_data.get("date")
-        sport = validated_data.get("sport").lower()
+        sport = validated_data.pop("sport").lower()
         request = self.context.get("request")
-        bookings,_ = Reserbas.objects.get_or_create(time=validated_data.get("time"),date=today)
+        
+        obj = None
+        validated_data.update({"user":request.user})
         match sport:
             case "paddle":
                 paddle = Paddle.objects.filter(has_capacity=True)[0]
-                bookings.paddle = paddle
-                bookings.total_to_pay += paddle.price
-                bookings.sport = paddle.name
-                bookings.save(update_fields=["paddle","total_to_pay","sport"])
+                obj = paddle
+                validated_data.update({"paddle":paddle})
             case "gym":
                 gym = Gym.objects.filter(has_capacity=True)[0]
-                bookings.gym = gym
-                bookings.total_to_pay += gym.price
-                bookings.sport = gym.name
-                bookings.save(update_fields=["gym","total_to_pay","sport"])
+                obj = gym
+                validated_data.update({"gym":gym})
             case "sink":
                 sink = Sink.objects.filter(has_capacity=True)[0]
-                bookings.pileta = sink
-                bookings.total_to_pay += sink.price
-                bookings.sport = sink.name
-                bookings.save(update_fields=["pileta","total_to_pay","sport"])
+                obj = sink
+                validated_data.update({"pileta":sink})
             case "futbol":
                 futbol = Futbol.objects.filter(has_capacity=True)[0]
-                bookings.futbol = futbol
-                bookings.total_to_pay += futbol.price
-                bookings.sport = futbol.name
-                bookings.save(update_fields=["futbol","total_to_pay","sport"])
+                obj = futbol
+                validated_data.update({"futbol":futbol})
         
-        bookings.user = request.user
-        bookings.save()
+        bookings,created = Reserbas.objects.get_or_create(**validated_data)
+        if created:
+            bookings.total_to_pay += obj.price
+            bookings.sport = obj.name
+            bookings.save()
+            obj.limit_users += 1
+            obj.save(update_fields=["limit_users"])
+            if obj.cant_current_users == obj.maximum_capacity:
+                obj.has_capacity = False
+                obj.save(update_fields=["has_capacity"])
+        else:
+            raise serializers.ValidationError({"message":"Ya tenes registrado una reserba en este dia y horario"})
         
         return bookings
         
@@ -112,3 +115,7 @@ class AddBookingsSerializers(serializers.Serializer):
                 raise serializers.ValidationError("No tenemos esta instalación")
     
     
+class BookingsTotalPaySerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Reserbas
+        fields = ["date","time","total_to_pay"]

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from api.constants import TypePayments,Sports
+from api.constants import TypePayments
 
 
 class Users(AbstractUser):
@@ -19,7 +19,7 @@ class Users(AbstractUser):
 class Instalaciones(models.Model):
     price = models.IntegerField(default=0)
     maximum_capacity = models.IntegerField(blank=True, null=True)
-    limit_users = models.IntegerField(default=0)
+    cant_current_users = models.IntegerField(default=0)
     has_capacity = models.BooleanField(default=True)
     name = models.CharField(max_length=15,null=True)
     class Meta:
@@ -64,6 +64,7 @@ class Reserbas(models.Model):
         max_length=12, default=TypePayments.OWES, choices=TypePayments.choices
     )
     total_to_pay = models.IntegerField(null=True,default=0)
+    cancel_bookings = models.BooleanField(default=False)
     user = models.ForeignKey(
         Users,
         db_column="user",
