@@ -33,3 +33,17 @@ class FutbolSerializers(serializers.ModelSerializer):
     class Meta:
         model = Futbol
         fields = "__all__"
+        
+
+
+class UsersDeptSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = user
+        fields = ["name","last_name"]
+
+class BookingsUserSerializers(serializers.ModelSerializer):
+    user = UsersDeptSerializers(read_only=True)
+    class Meta:
+        model = Reserbas
+        fields = ["date","time","sport","user"]
+        depth = 1

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "rest_framework",
     "rest_framework_simplejwt",
+    "drf_multiple_model"
 ]
 
 MIDDLEWARE = [

@@ -1,9 +1,10 @@
-django
-djangorestframework
-markdown
-django-filter
-djangorestframework-simplejwt
-pymysql
-python-dotenv
 cryptography
 colorama
+django
+djangorestframework
+django-filter
+djangorestframework-simplejwt
+django-rest-multiple-models
+markdown
+pymysql
+python-dotenv
