@@ -13,38 +13,38 @@ user = get_user_model()
 class UsersViews(ListAPIView):
     permission_classes = [IsAuthenticated,AdminUser]
     queryset = user.objects.all()
-    serializer_class = UsersSerializers
+    serializer_class = AdminUsersSerializers
     
     
 class BookingsViews(ListAPIView):
     permission_classes = [IsAuthenticated,AdminUser]
     queryset = Reserbas.objects.all()
-    serializer_class = BookingsSerializers
+    serializer_class = AdminBookingsSerializers
     
     
 class SinksViews(ListAPIView):
     permission_classes = [IsAuthenticated,AdminUser]
     queryset = Sink.objects.all()
-    serializer_class = SinksSerializers
+    serializer_class = AdminSinksSerializers
     
 class PaddleViews(ListAPIView):
     permission_classes = [IsAuthenticated,AdminUser]
     queryset = Paddle.objects.all()
-    serializer_class = PaddleSerializers
+    serializer_class = AdminPaddleSerializers
     
 class FutbolViews(ListAPIView):
     permission_classes = [IsAuthenticated,AdminUser]
     queryset = Futbol.objects.all()
-    serializer_class = FutbolSerializers
+    serializer_class = AdminFutbolSerializers
     
 class GymViews(ListAPIView):
     permission_classes = [IsAuthenticated,AdminUser]
     queryset = Gym.objects.all()
-    serializer_class = GymSerializers
+    serializer_class = AdminGymSerializers
     
 class BookingsUsers(ListAPIView):
     permission_classes = [IsAuthenticated,AdminUser]
-    serializer_class = BookingsUserSerializers
+    serializer_class = AdminBookingsUserSerializers
     
     def get_queryset(self):
         return Reserbas.objects.filter(user=self.request.query_params.get("id")) 
@@ -57,22 +57,22 @@ class BookingsFreeView(FlatMultipleModelAPIView):
     querylist = [
         {
             'queryset': Sink.objects.filter(has_capacity=True),
-            'serializer_class': SinksSerializers,
+            'serializer_class': AdminSinksSerializers,
             'label': 'sink',
         },
         {
             'queryset': Gym.objects.filter(has_capacity=True),
-            'serializer_class': GymSerializers,
+            'serializer_class': AdminGymSerializers,
             'label': 'gym'
         },
         {
             'queryset': Paddle.objects.filter(has_capacity=True),
-            'serializer_class': PaddleSerializers,
+            'serializer_class': AdminPaddleSerializers,
             'label': 'paddle',
         },
         {
             'queryset': Futbol.objects.filter(has_capacity=True),
-            'serializer_class': FutbolSerializers,
+            'serializer_class': AdminFutbolSerializers,
             'label': 'futbol'
         },
         

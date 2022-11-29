@@ -4,45 +4,43 @@ from api.models import Reserbas,Gym,Futbol,Paddle,Sink
 user = get_user_model()
 
 
-class UsersSerializers(serializers.ModelSerializer):
+class AdminUsersSerializers(serializers.ModelSerializer):
     class Meta:
         model = user
         fields = "__all__"
         
-class BookingsSerializers(serializers.ModelSerializer):
+class AdminBookingsSerializers(serializers.ModelSerializer):
     class Meta:
         model = Reserbas
         fields = "__all__"
 
-class SinksSerializers(serializers.ModelSerializer):
+class AdminSinksSerializers(serializers.ModelSerializer):
     class Meta:
         model = Sink
         fields = "__all__"
         
-class GymSerializers(serializers.ModelSerializer):
+class AdminGymSerializers(serializers.ModelSerializer):
     class Meta:
         model = Gym
         fields = "__all__"
 
-class PaddleSerializers(serializers.ModelSerializer):
+class AdminPaddleSerializers(serializers.ModelSerializer):
     class Meta:
         model = Paddle
         fields = "__all__"
         
-class FutbolSerializers(serializers.ModelSerializer):
+class AdminFutbolSerializers(serializers.ModelSerializer):
     class Meta:
         model = Futbol
         fields = "__all__"
         
-
-
-class UsersDeptSerializers(serializers.ModelSerializer):
+class AdminUsersDeptSerializers(serializers.ModelSerializer):
     class Meta:
         model = user
         fields = ["name","last_name"]
 
-class BookingsUserSerializers(serializers.ModelSerializer):
-    user = UsersDeptSerializers(read_only=True)
+class AdminBookingsUserSerializers(serializers.ModelSerializer):
+    user = AdminUsersDeptSerializers(read_only=True)
     class Meta:
         model = Reserbas
         fields = ["date","time","sport","user"]
