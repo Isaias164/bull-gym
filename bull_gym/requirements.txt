@@ -5,6 +5,8 @@ djangorestframework
 django-filter
 djangorestframework-simplejwt
 django-rest-multiple-models
+drf-spectacular
+drf-spectacular[sidecar]
 markdown
 pymysql
 python-dotenv
