@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-from pymysql import install_as_MySQLdb
+#from pymysql import install_as_MySQLdb
 from django.conf import settings
 
-install_as_MySQLdb()
+#install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,12 +86,13 @@ WSGI_APPLICATION = "bull_gym.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "bullgym",
-        "USER": "wsl",
-        "PASSWORD": "123456@Isa",
-        "HOST": "localhost",
-        "PORT": "3306",
+        #"ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends.sqlite3",
+        # "NAME": "bull_gym",
+        # "USER": "wsl",
+        # "PASSWORD": "bull-gym2022",#"123456@Isa",
+        # "HOST": "localhost",
+        # "PORT": "3306",
     }
 }
 
